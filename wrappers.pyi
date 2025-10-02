@@ -2,7 +2,9 @@ from collections.abc import Callable
 from typing import Any
 from typing_extensions import Self
 
-from .low_level import Message, Signature
+from .low_level import Message
+
+_Signature = str
 
 class DBusAddress:
     object_path: str
@@ -57,8 +59,8 @@ class Properties:
 
     def __init__(self, obj: DBusAddress | MessageGenerator) -> None: ...
     def get(self, name: str) -> Message: ...
-    def get_all(self) -> dict[str, tuple[Signature, Any]]: ...
-    def set(self, name: str, signature: Signature, value: object) -> Message: ...
+    def get_all(self) -> dict[str, tuple[_Signature, Any]]: ...
+    def set(self, name: str, signature: _Signature, value: object) -> Message: ...
 
 class DBusErrorResponse(Exception):
     name: str
