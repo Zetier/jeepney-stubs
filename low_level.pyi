@@ -96,7 +96,6 @@ class Struct:
         self,
         fields: list[Array[object] | StringType | FixedType[object] | Variant],
     ) -> None: ...
-
     def parse_data(
         self,
         buf: bytes,
@@ -104,8 +103,6 @@ class Struct:
         endianness: Endianness,
         fds: Sequence[FileDescriptorLike] = ...,
     ) -> _ParseResult[Any]: ...
-
-
     def serialise(
         self,
         data: tuple[object, ...],
@@ -114,17 +111,19 @@ class Struct:
         fds: None = ...,
     ) -> bytes: ...
 
-class DictEntry(Struct, Generic[TKey, TValue]): 
-    def __init__(self, fields: tuple[TKey, TValue]) -> None:
-        ...
+class DictEntry(Struct, Generic[TKey, TValue]):
+    def __init__(self, fields: tuple[TKey, TValue]) -> None: ...
 
 _TArrayKey = TypeVar("_TArrayKey", default=object)
+
 # Can't really do proper specialization here but
 # array is either an array of a serializable type
 # OR a dict of serializable types. the first type
 # must be either of fixed size or a string though.
 class Array(Generic[T, _TArrayKey]):
-    def __init__(self, elt_type: Serializable[T] | DictEntry[_TArrayKey, T]) -> None: ...
+    def __init__(
+        self, elt_type: Serializable[T] | DictEntry[_TArrayKey, T]
+    ) -> None: ...
     def parse_data(
         self,
         buf: ReadableBuffer,
@@ -197,7 +196,9 @@ class Header:
 class Message:
     def __init__(self, header: Header, body: tuple[object, ...]) -> None: ...
     @classmethod
-    def from_buffer(cls, buf: bytes, fds: list[FileDescriptorLike] = ...) -> Message: ...
+    def from_buffer(
+        cls, buf: bytes, fds: list[FileDescriptorLike] = ...
+    ) -> Message: ...
     def serialise(self, serial: int | None = ..., fds: None = ...) -> bytes: ...
 
 class Parser:
