@@ -1,8 +1,6 @@
 from _typeshed import Incomplete
 import asyncio
-from collections import deque
 from collections.abc import Iterable
-from socket import socket
 from typing import Any, Literal
 
 from ..bus_messages import MatchRule

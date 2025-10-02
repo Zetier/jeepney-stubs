@@ -3,12 +3,12 @@ from .wrappers import MessageGenerator
 from typing import Any
 
 __all__ = [
-    'DBusNameFlags',
-    'DBus',
-    'message_bus',
-    'Monitoring',
-    'Stats',
-    'MatchRule',
+    "DBusNameFlags",
+    "DBus",
+    "message_bus",
+    "Monitoring",
+    "Stats",
+    "MatchRule",
 ]
 
 class DBusNameFlags:
@@ -17,7 +17,7 @@ class DBusNameFlags:
     do_not_queue: int = 4
 
 class DBus:
-    interface: str = 'org.freedesktop.DBus'
+    interface: str = "org.freedesktop.DBus"
 
     def __init__(self, object_path: str = ..., bus_name: str = ...) -> None: ...
     def Hello(self) -> Message: ...
@@ -43,11 +43,19 @@ class DBus:
 message_bus: DBus
 
 class Monitoring(MessageGenerator):
-    def __init__(self, object_path:str='/org/freedesktop/DBus', bus_name: str='org.freedesktop.DBus'): ...
+    def __init__(
+        self,
+        object_path: str = "/org/freedesktop/DBus",
+        bus_name: str = "org.freedesktop.DBus",
+    ): ...
     def BecomeMonitor(self, rules: str) -> Message: ...
 
 class Stats(MessageGenerator):
-    def __init__(self, object_path: str='/org/freedesktop/DBus', bus_name: str='org.freedesktop.DBus'): ...
+    def __init__(
+        self,
+        object_path: str = "/org/freedesktop/DBus",
+        bus_name: str = "org.freedesktop.DBus",
+    ): ...
     def GetStats(self) -> Message: ...
     def GetConnectionStats(self, arg0: Any) -> Message: ...
     def GetAllMatchRules(self) -> Message: ...
@@ -56,7 +64,7 @@ class MatchRule:
     def __init__(
         self,
         *,
-        type: MessageType | None=None,
+        type: MessageType | None = None,
         sender: str | None = None,
         interface: str | None = None,
         member: str | None = None,
@@ -67,4 +75,6 @@ class MatchRule:
     ) -> None: ...
     def serialise(self) -> str: ...
     def matches(self, msg: Message) -> bool: ...
-    def add_arg_condition(self, argno: int, value: str, kind:str = 'string') -> None: ...
+    def add_arg_condition(
+        self, argno: int, value: str, kind: str = "string"
+    ) -> None: ...
