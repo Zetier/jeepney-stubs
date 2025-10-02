@@ -4,13 +4,6 @@ jeepney.tests.*
 
 jeepney.bindgen.*
 
-jeepney.io.asyncio.DBusConnection
-jeepney.io.asyncio.DBusRouter
-jeepney.io.asyncio.Incomplete
-jeepney.io.asyncio.Proxy
-jeepney.io.asyncio.open_dbus_connection
-jeepney.io.asyncio.open_dbus_router
-
 jeepney.io.threading.DBusConnection
 jeepney.io.threading.DBusRouter
 jeepney.io.threading.Proxy
