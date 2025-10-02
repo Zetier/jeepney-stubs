@@ -28,6 +28,7 @@ python_version = 3.12
 dev = [
     "jeepney>=0.9.0",
     "mypy[faster-cache]>=1.18.2",
+    "basedpyright>=1.31.4",
 ]
 
 
@@ -43,6 +44,9 @@ rm -rf
   **/.tox
 """
 
+[tool.poe.tasks.mypy]
+cmd = "uv run mypy jeepney-stubs"
+
 [tool.poe.tasks.stubtest]
 cmd = """
 uv run
@@ -53,6 +57,13 @@ uv run
   --allowlist=.mypyignore
   jeepney
 """
+
+[tool.poe.tasks.basedpyright]
+cmd = """uv run basedpyright jeepney-stubs"""
+
+[tool.basedpyright]
+reportExplicitAny = false
+reportIncompleteStub = false
 
 [tool.tox]
 min_version = "4"

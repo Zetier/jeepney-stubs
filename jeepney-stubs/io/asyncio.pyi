@@ -61,6 +61,6 @@ class open_dbus_router:
 class Proxy(ProxyBase):
     def __init__(
         self,
-        msggen: Any,
+        msggen: Any,  # pyright: ignore[reportAny]
         router: DBusRouter,
     ) -> None: ...
