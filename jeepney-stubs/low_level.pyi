@@ -4,31 +4,35 @@ from enum import Enum, IntEnum, IntFlag
 from typing import Any, Generic, type_check_only
 from typing_extensions import NoReturn, Protocol, TypeVar
 
-T = TypeVar("T")
-TPy = TypeVar("TPy")
-TKey = TypeVar("TKey")
-TValue = TypeVar("TValue")
+_T = TypeVar("_T")
+_TPy = TypeVar("_TPy")
+_TKey = TypeVar("_TKey")
+_TValue = TypeVar("_TValue")
 
 _Signature = str
-_DBusObject = tuple[str, T]
+_DBusObject = tuple[str, _T]
 
-_ParseResult = tuple[T, int]
+_ParseResult = tuple[_T, int]
+
+endian_map: dict[bytes, Endianness]
+header_field_codes: dict[int, str]
+simple_types: dict[str, FixedType[object]]
 
 @type_check_only
-class Serializable(Protocol[T]):
+class Serializable(Protocol[_T]):
     def parse_data(
         self,
         buf: ReadableBuffer,
         pos: int,
         endianness: Endianness,
-        fds: Sequence[FileDescriptorLike],
-    ) -> _ParseResult[T]: ...
+        fds: Sequence[FileDescriptorLike] = (),
+    ) -> _ParseResult[_T]: ...
     def serialise(
         self,
-        data: T,
+        data: _T,
         pos: int,
         endianness: Endianness,
-        fds: Sequence[FileDescriptorLike],
+        fds: Sequence[FileDescriptorLike] | None = None,
     ) -> bytes: ...
 
 class SizeLimitError(ValueError):
@@ -71,7 +75,7 @@ class HeaderFields(IntEnum):
 
 def padding(pos: int, step: int) -> int: ...
 
-class FixedType(Serializable[T]):
+class FixedType(Serializable[_T]):
     def __init__(self, size: int, struct_code: str) -> None: ...
 
 class Boolean(FixedType[bool]):
@@ -92,6 +96,8 @@ class ObjectPathType(StringType):
     def __init__(self) -> None: ...
 
 class Struct:
+    alignment: int = 8
+
     def __init__(
         self,
         fields: list[Array[object] | StringType | FixedType[object] | Variant],
@@ -111,8 +117,8 @@ class Struct:
         fds: None = ...,
     ) -> bytes: ...
 
-class DictEntry(Struct, Generic[TKey, TValue]):
-    def __init__(self, fields: tuple[TKey, TValue]) -> None: ...
+class DictEntry(Struct, Generic[_TKey, _TValue]):
+    def __init__(self, fields: tuple[_TKey, _TValue]) -> None: ...
 
 _TArrayKey = TypeVar("_TArrayKey", default=object)
 
@@ -120,9 +126,12 @@ _TArrayKey = TypeVar("_TArrayKey", default=object)
 # array is either an array of a serializable type
 # OR a dict of serializable types. the first type
 # must be either of fixed size or a string though.
-class Array(Generic[T, _TArrayKey]):
+class Array(Generic[_T, _TArrayKey]):
+    alignment: int = 4
+    length_type: FixedType[int]
+
     def __init__(
-        self, elt_type: Serializable[T] | DictEntry[_TArrayKey, T]
+        self, elt_type: Serializable[_T] | DictEntry[_TArrayKey, _T]
     ) -> None: ...
     def parse_data(
         self,
@@ -130,22 +139,24 @@ class Array(Generic[T, _TArrayKey]):
         pos: int,
         endianness: Endianness,
         fds: Sequence[FileDescriptor] = ...,
-    ) -> _ParseResult[list[T] | dict[_TArrayKey, T]]: ...
+    ) -> _ParseResult[list[_T] | dict[_TArrayKey, _T]]: ...
     def serialise(
         self,
-        data: bytes | dict[_TArrayKey, T] | list[T],
+        data: bytes | dict[_TArrayKey, _T] | list[_T],
         pos: int,
         endianness: Endianness,
-        fds: Sequence[object] = ...,
+        fds: Sequence[FileDescriptorLike] | None = ...,
     ) -> bytes: ...
 
 class Variant:
+    alignment: int = 1
+
     def parse_data(
         self,
         buf: bytes,
         pos: int,
         endianness: Endianness,
-        fds: tuple[FileDescriptorLike] = ...,
+        fds: Sequence[FileDescriptorLike] = ...,
     ) -> _ParseResult[tuple[_Signature, object]]: ...
     def serialise(
         self,
@@ -197,11 +208,13 @@ class Message:
     def __init__(self, header: Header, body: tuple[object, ...]) -> None: ...
     @classmethod
     def from_buffer(
-        cls, buf: bytes, fds: list[FileDescriptorLike] = ...
+        cls, buf: bytes, fds: Sequence[FileDescriptorLike] = ()
     ) -> Message: ...
     def serialise(self, serial: int | None = ..., fds: None = ...) -> bytes: ...
 
 class Parser:
     def __init__(self) -> None: ...
-    def add_data(self, data: bytes, fds: list[FileDescriptorLike] = ...) -> None: ...
+    def add_data(self, data: bytes, fds: Sequence[FileDescriptorLike] = ...) -> None: ...
     def get_next_message(self) -> Message | None: ...
+    def bytes_desired(self) -> int: ...
+    def feed(self, data: bytes) -> list[Message]: ...

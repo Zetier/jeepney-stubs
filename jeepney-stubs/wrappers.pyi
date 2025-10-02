@@ -4,6 +4,18 @@ from typing_extensions import Self
 
 from .low_level import Message
 
+__all__ = [
+    'DBusAddress',
+    'new_method_call',
+    'new_method_return',
+    'new_error',
+    'new_signal',
+    'MessageGenerator',
+    'Properties',
+    'Introspectable',
+    'DBusErrorResponse',
+]
+
 _Signature = str
 
 class DBusAddress:
@@ -23,19 +35,19 @@ def new_method_call(
     remote_obj: DBusAddress | MessageGenerator,
     method: str,
     signature: None = ...,
-    body: tuple[object, ...] = ...,
+    body: tuple[object, ...] = ()
 ) -> Message: ...
 def new_method_return(
-    parent_msg: Message, signature: str | None, body: tuple[object, ...]
+    parent_msg: Message, signature: str | None = None, body: tuple[object, ...] = ()
 ) -> Message: ...
 def new_error(
     parent_msg: Message,
     error_name: str,
-    signature: str | None,
-    body: tuple[object, ...],
+    signature: str | None = None,
+    body: tuple[object, ...] = (),
 ) -> Message: ...
 def new_signal(
-    emitter: DBusAddress, signal: str, signature: str | None, body: tuple[object, ...]
+    emitter: DBusAddress, signal: str, signature: str | None=None, body: tuple[object, ...] = ()
 ) -> Message: ...
 def unwrap_msg(msg: Message) -> tuple[list[Any]] | tuple[str]: ...
 
@@ -65,4 +77,6 @@ class Properties:
 class DBusErrorResponse(Exception):
     name: str
     data: tuple[Any, ...]
+
+    def __init__(self, msg: Message) -> None: ...
     ...

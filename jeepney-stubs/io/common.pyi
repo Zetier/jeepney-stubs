@@ -1,7 +1,9 @@
+from asyncio import Future
 from collections import deque
 from typing import Iterable, Literal, NoReturn
 from ..low_level import Message
 from ..bus_messages import MatchRule
+from contextlib import AbstractContextManager
 
 class MessageFilters:
     filters: dict[int, FilterHandle]
@@ -18,6 +20,12 @@ class FilterHandle:
     def __exit__(
         self, exc_type: object, exc_val: object, exc_tb: object
     ) -> Literal[False]: ...
+
+class ReplyMatcher:
+    def dispatch(self, msg: Message) -> bool: ...
+    def drop_all(self, exc: Exception | None = None) -> None: ...
+
+    def catch(self, serial: int, future: Future[Message]) -> AbstractContextManager[Future[Message]]: ...
 
 class RouterClosed(Exception):
     """Raised in tasks waiting for a reply when the router is closed

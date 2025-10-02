@@ -2,6 +2,7 @@ from collections.abc import Iterable
 from enum import Enum
 
 BEGIN: bytes
+NEGOTIATE_UNIX_FD: bytes
 
 def make_auth_external() -> bytes: ...
 def make_auth_anonymous() -> bytes: ...
