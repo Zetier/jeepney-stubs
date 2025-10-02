@@ -1,6 +1,6 @@
 from collections import deque
 from typing import Iterable, Literal, NoReturn
-from ..wrappers import Message
+from ..low_level import Message
 from ..bus_messages import MatchRule
 
 class MessageFilters:
