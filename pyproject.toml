@@ -1,0 +1,10 @@
+[project]
+name = "jeepney-types"
+version = "0.1.0"
+description = "Type stubs for jeepney"
+python_version = ">=3.8"
+readme = "README.md"
+dependencies = []
+
+[mypy]
+python_version = 3.12
