@@ -1,5 +1,9 @@
+[tool.uv.build-backend]
+module-name = "jeepney-stubs"
+module-root = ""
+
 [project]
-name = "jeepney-types"
+name = "jeepney-stubs"
 version = "0.1.0"
 description = "Type stubs for jeepney"
 python_version = ">=3.8"
