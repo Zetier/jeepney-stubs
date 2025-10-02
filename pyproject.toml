@@ -98,3 +98,7 @@ deps = [
     "mypy==1.14.1",
 ]
 commands = [ [ "mypy", "jeepney-stubs" ], ]
+
+[tool.tox.gh.python]
+"3.13" = ["3.13"]
+"3.8" = ["3.8"]
