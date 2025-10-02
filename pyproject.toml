@@ -30,6 +30,8 @@ dev = [
     "mypy[faster-cache]>=1.18.2",
 ]
 
+
+# In large part taken from https://github.com/scipy/scipy-stubs/blob/master/pyproject.toml
 [tool.poe.tasks.clean]
 cmd = """
 rm -rf
