@@ -84,7 +84,8 @@ commands = [
     "--allowlist=.mypyignore",
     { replace = "posargs", default = ["jeepney"], extend = true },
   ],
-  [ "mypy", "jeepney-stubs" ]
+  [ "mypy", "jeepney-stubs" ],
+  [ "basedpyright" ]
 ]
 
 [tool.tox.env.3.8]
