@@ -1,3 +1,4 @@
+from typing import Literal
 from .low_level import Message, MessageType
 from .wrappers import MessageGenerator
 
@@ -75,5 +76,5 @@ class MatchRule:
     def serialise(self) -> str: ...
     def matches(self, msg: Message) -> bool: ...
     def add_arg_condition(
-        self, argno: int, value: str, kind: str = "string"
+        self, argno: int, value: str, kind: Literal["string"] | Literal["path"] | Literal["namespace"] = "string"
     ) -> None: ...
