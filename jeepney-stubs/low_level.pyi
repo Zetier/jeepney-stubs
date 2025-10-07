@@ -1,7 +1,7 @@
 from _typeshed import FileDescriptorLike, ReadableBuffer
 from collections.abc import Iterator, Sequence
 from enum import Enum, IntEnum, IntFlag
-from typing import Any, Generic, type_check_only
+from typing import Any, Generic, Literal, type_check_only
 from typing_extensions import NoReturn, Protocol, TypeVar
 
 _T = TypeVar("_T")
@@ -190,6 +190,14 @@ class BufferPipe:
     def write(self, b: bytes) -> None: ...
 
 class Header:
+    endianness: Endianness
+    message_type: MessageType
+    flags: MessageFlag
+    protocol_version: Literal[1]
+    body_length: int
+    serial: int | None
+    fields: dict[HeaderFields, Any]
+
     def __init__(
         self,
         endianness: Endianness,
@@ -205,6 +213,9 @@ class Header:
     def serialise(self, serial: int | None = ...) -> bytes: ...
 
 class Message:
+    header: Header
+    body: tuple[Any, ...]
+
     def __init__(self, header: Header, body: tuple[object, ...]) -> None: ...
     @classmethod
     def from_buffer(
