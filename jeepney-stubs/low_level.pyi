@@ -171,13 +171,13 @@ def parse_header_fields(
     buf: bytes,
     endianness: Endianness,
 ) -> (
-    tuple[dict[HeaderFields, str], int] | tuple[dict[HeaderFields, str | int], int]
+    tuple[dict[HeaderFields, Any], int] 
 ): ...
 def parse_signature(
     sig: list[str],
 ) -> Struct | Array[object] | StringType | ObjectPathType | FixedType[object]: ...
 def serialise_header_fields(
-    d: dict[HeaderFields, str],
+    d: dict[HeaderFields, Any],
     endianness: Endianness,
 ) -> bytes: ...
 
@@ -198,7 +198,7 @@ class Header:
         protocol_version: int,
         body_length: int,
         serial: int,
-        fields: dict[HeaderFields, str | int],
+        fields: dict[HeaderFields, Any],
     ) -> None: ...
     @classmethod
     def from_buffer(cls, buf: bytes) -> tuple[Header, int]: ...
