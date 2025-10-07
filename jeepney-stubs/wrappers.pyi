@@ -34,7 +34,7 @@ class DBusAddress:
 def new_method_call(
     remote_obj: DBusAddress | MessageGenerator,
     method: str,
-    signature: None = ...,
+    signature: str | None = ...,
     body: tuple[object, ...] = (),
 ) -> Message: ...
 def new_method_return(
