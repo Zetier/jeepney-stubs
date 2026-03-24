@@ -8,6 +8,7 @@ uv sync
 Tests can be run in two ways, which you can install with
 ```bash
 uv tool install tox --with tox-uv --upgrade
+uv tool install poethepoet
 ```
 
 To individually run tests on the current python version, you can use
